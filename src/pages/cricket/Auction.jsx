@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { io } from 'socket.io-client';
 import API, { BASE_URL } from '../../services/api';
+import { ObsRoot, ObsLinksButton, isObsMode } from './AuctionObsPanels';   // ADDED: OBS panels (file sits next to this one)
 
 /* Cricket auction - live viewer page.
    Same look as the football auction page (dark stage, glowing live card, animated bid, player cards),
@@ -350,6 +351,9 @@ export default function Auction() {
     }
   }, [a]);
 
+  // ADDED: OBS link (?panel=player&obs=1...) -> render ONLY that panel, nothing else of the page
+  if (isObsMode()) return <ObsRoot a={a} flash={flash} online={online} />;
+
   if (a === undefined) {
     return (
       <div className="ca"><style>{CSS}</style>
@@ -401,6 +405,7 @@ export default function Auction() {
             {a.tournament?.name && <span className="ca-pill g">{a.tournament.name}</span>}
             <span className="ca-pill">{a.name}</span>
             <span className="ca-pill"><span className={`ca-dot ${online ? '' : 'off'}`} />{online ? 'Live feed connected' : 'Reconnecting...'}</span>
+            <ObsLinksButton />
           </div>
         </div>
       </header>
